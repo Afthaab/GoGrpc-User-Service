@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package profile;
+
+option go_package = "./pkg/pb";
+
+service ProfileManagement{
+    rpc ViewProfile(ViewProfileRequest) returns (ViewProfileResponse) {}
+}
+
+message ViewProfileRequest{
+    int64 id = 1;
+}
+
+message ViewProfileResponse{
+    int64 status = 1;
+    string error = 2;
+    int64 id = 3;
+    string username = 4;
+    string email = 5;
+}
+
+// export PATH="$PATH:$(go env GOPATH)/bin"
+// protoc --go_out=. --go-grpc_out=. pkg/pb/proile.proto
