@@ -10,10 +10,9 @@ type UserDataBase struct {
 	DB *gorm.DB
 }
 
-func (r *UserDataBase) ViewProfile(id int64) (domain.User, error) {
-	userData := domain.User{}
-	result := r.DB.Raw("select * from users where id = ?", id).Scan(&userData).Error
-	return userData, result
+func (r *UserDataBase) ViewProfile(user domain.User) (domain.User, error) {
+	result := r.DB.Raw("select * from users where id = ?", user.Id).Scan(&user).Error
+	return user, result
 }
 
 func NewUserRepo(db *gorm.DB) interfaces.UserRepo {

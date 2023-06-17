@@ -10,9 +10,8 @@ type UserRepo struct {
 	Repo interfaces.UserRepo
 }
 
-func (u *UserRepo) ViewProfile(userid int64) (domain.User, error) {
-	user := domain.User{}
-	user, err := u.Repo.ViewProfile(userid)
+func (u *UserRepo) ViewProfile(user domain.User) (domain.User, error) {
+	user, err := u.Repo.ViewProfile(user)
 	return user, err
 }
 

@@ -5,4 +5,6 @@ type User struct {
 	Username string `json:"username" gorm:"unique" validate:"required,min=2,max=50"`
 	Password string `json:"password"`
 	Email    string `json:"email" gorm:"notnull;unique" validate:"email,required"`
+	Phone    string `json:"phone" validate:"required,len=10"`
+	Profile  string `json:"profile"`
 }

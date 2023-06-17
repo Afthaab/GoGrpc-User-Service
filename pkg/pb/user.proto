@@ -14,11 +14,13 @@ message ViewProfileRequest{
 
 message ViewProfileResponse{
     int64 status = 1;
-    string error = 2;
-    int64 id = 3;
-    string username = 4;
-    string email = 5;
+    string username = 2;
+    string email = 3;
+    string phone = 4;
+    string profile = 5 ;  
+    string error = 6;
+    
 }
 
 // export PATH="$PATH:$(go env GOPATH)/bin"
-// protoc --go_out=. --go-grpc_out=. pkg/pb/proile.proto
+// protoc --go_out=. --go-grpc_out=. pkg/pb/user.proto

@@ -21,8 +21,10 @@ func NewUserHandler(usecase interfaces.UserUseCase) *UserHandler {
 }
 
 func (h *UserHandler) ViewProfile(ctx context.Context, req *pb.ViewProfileRequest) (*pb.ViewProfileResponse, error) {
-	user := domain.User{}
-	user, err := h.useCase.ViewProfile(req.Id)
+	user := domain.User{
+		Id: uint(req.Id),
+	}
+	user, err := h.useCase.ViewProfile(user)
 	if err != nil {
 		return &pb.ViewProfileResponse{
 			Status: http.StatusUnprocessableEntity,
@@ -31,8 +33,9 @@ func (h *UserHandler) ViewProfile(ctx context.Context, req *pb.ViewProfileReques
 	}
 	return &pb.ViewProfileResponse{
 		Status:   http.StatusOK,
-		Id:       int64(user.Id),
 		Username: user.Username,
 		Email:    user.Email,
+		Phone:    user.Phone,
+		Profile:  user.Profile,
 	}, nil
 }
