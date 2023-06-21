@@ -14,7 +14,10 @@ func ConnectToDataBase(cfg config.Config) (*gorm.DB, error) {
 	db, dbErr := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{
 		SkipDefaultTransaction: true,
 	})
-	db.AutoMigrate(&domain.User{})
+	db.AutoMigrate(
+		&domain.User{},
+		&domain.Address{},
+	)
 	return db, dbErr
 
 }

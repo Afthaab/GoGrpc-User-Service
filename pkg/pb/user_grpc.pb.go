@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProfileManagementClient interface {
 	ViewProfile(ctx context.Context, in *ViewProfileRequest, opts ...grpc.CallOption) (*ViewProfileResponse, error)
+	EditProfile(ctx context.Context, in *EditProfileRequest, opts ...grpc.CallOption) (*EditProfileResponse, error)
+	ChangePassword(ctx context.Context, in *ChangeRequest, opts ...grpc.CallOption) (*ChangeResponse, error)
+	AddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*AddAddressResponse, error)
 }
 
 type profileManagementClient struct {
@@ -42,11 +45,41 @@ func (c *profileManagementClient) ViewProfile(ctx context.Context, in *ViewProfi
 	return out, nil
 }
 
+func (c *profileManagementClient) EditProfile(ctx context.Context, in *EditProfileRequest, opts ...grpc.CallOption) (*EditProfileResponse, error) {
+	out := new(EditProfileResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/EditProfile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *profileManagementClient) ChangePassword(ctx context.Context, in *ChangeRequest, opts ...grpc.CallOption) (*ChangeResponse, error) {
+	out := new(ChangeResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/ChangePassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *profileManagementClient) AddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*AddAddressResponse, error) {
+	out := new(AddAddressResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/AddAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProfileManagementServer is the server API for ProfileManagement service.
 // All implementations must embed UnimplementedProfileManagementServer
 // for forward compatibility
 type ProfileManagementServer interface {
 	ViewProfile(context.Context, *ViewProfileRequest) (*ViewProfileResponse, error)
+	EditProfile(context.Context, *EditProfileRequest) (*EditProfileResponse, error)
+	ChangePassword(context.Context, *ChangeRequest) (*ChangeResponse, error)
+	AddAddress(context.Context, *AddAddressRequest) (*AddAddressResponse, error)
 	mustEmbedUnimplementedProfileManagementServer()
 }
 
@@ -56,6 +89,15 @@ type UnimplementedProfileManagementServer struct {
 
 func (UnimplementedProfileManagementServer) ViewProfile(context.Context, *ViewProfileRequest) (*ViewProfileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewProfile not implemented")
+}
+func (UnimplementedProfileManagementServer) EditProfile(context.Context, *EditProfileRequest) (*EditProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditProfile not implemented")
+}
+func (UnimplementedProfileManagementServer) ChangePassword(context.Context, *ChangeRequest) (*ChangeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
+}
+func (UnimplementedProfileManagementServer) AddAddress(context.Context, *AddAddressRequest) (*AddAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddAddress not implemented")
 }
 func (UnimplementedProfileManagementServer) mustEmbedUnimplementedProfileManagementServer() {}
 
@@ -88,6 +130,60 @@ func _ProfileManagement_ViewProfile_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProfileManagement_EditProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).EditProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/EditProfile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).EditProfile(ctx, req.(*EditProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProfileManagement_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/ChangePassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).ChangePassword(ctx, req.(*ChangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProfileManagement_AddAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).AddAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/AddAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).AddAddress(ctx, req.(*AddAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProfileManagement_ServiceDesc is the grpc.ServiceDesc for ProfileManagement service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +194,18 @@ var ProfileManagement_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ViewProfile",
 			Handler:    _ProfileManagement_ViewProfile_Handler,
+		},
+		{
+			MethodName: "EditProfile",
+			Handler:    _ProfileManagement_EditProfile_Handler,
+		},
+		{
+			MethodName: "ChangePassword",
+			Handler:    _ProfileManagement_ChangePassword_Handler,
+		},
+		{
+			MethodName: "AddAddress",
+			Handler:    _ProfileManagement_AddAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

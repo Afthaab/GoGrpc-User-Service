@@ -6,6 +6,9 @@ option go_package = "./pkg/pb";
 
 service ProfileManagement{
     rpc ViewProfile(ViewProfileRequest) returns (ViewProfileResponse) {}
+    rpc EditProfile(EditProfileRequest) returns (EditProfileResponse) {}
+    rpc ChangePassword(ChangeRequest) returns (ChangeResponse) {}
+    rpc AddAddress(AddAddressRequest) returns (AddAddressResponse) {}
 }
 
 message ViewProfileRequest{
@@ -19,8 +22,47 @@ message ViewProfileResponse{
     string phone = 4;
     string profile = 5 ;  
     string error = 6;
-    
+    string gender = 7;
+    string dob = 8;
 }
+message EditProfileRequest{
+    int64 id = 1 ;
+    string username = 2;
+    string gender = 3;
+    string dob = 4;
+}
+
+message EditProfileResponse{
+    int64 status = 1;
+    string error = 2;
+}
+
+message ChangeRequest{
+    int64 id = 1;
+    string oldpassword = 2;
+    string newpassword = 3;
+}
+
+message ChangeResponse{
+    int64 status = 1;
+    string error = 2;
+}
+
+message AddAddressRequest{
+    int64 id = 1;
+    string houseno = 2;
+    string area = 3;
+    string landmark = 4;
+    string city = 5;
+    string type = 6;
+}
+
+message AddAddressResponse{
+    int64 status = 1;
+    string error = 2;
+    int64 addid = 3;
+}
+
 
 // export PATH="$PATH:$(go env GOPATH)/bin"
 // protoc --go_out=. --go-grpc_out=. pkg/pb/user.proto
