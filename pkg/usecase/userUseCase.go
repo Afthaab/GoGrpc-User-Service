@@ -63,6 +63,21 @@ func (u *UserRepo) AddAddress(addressData domain.Address) (domain.Address, error
 	return addressData, nil
 }
 
+func (u *UserRepo) ViewAddress(addressData domain.Address) ([]domain.Address, error) {
+	var address []domain.Address
+	address, err := u.Repo.ViewAllAddress(addressData)
+	if err != nil {
+		return address, errors.New("Could not view the User Address")
+	}
+	return address, nil
+}
+func (u *UserRepo) EditAddress(addressData domain.Address) (domain.Address, error) {
+	addressData, err := u.Repo.EditAddress(addressData)
+	if err == 0 {
+		return addressData, errors.New("Could not edit the address")
+	}
+	return addressData, nil
+}
 func NewUserUseCase(repo interfaces.UserRepo) useCase.UserUseCase {
 	return &UserRepo{
 		Repo: repo,

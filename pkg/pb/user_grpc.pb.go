@@ -26,6 +26,8 @@ type ProfileManagementClient interface {
 	EditProfile(ctx context.Context, in *EditProfileRequest, opts ...grpc.CallOption) (*EditProfileResponse, error)
 	ChangePassword(ctx context.Context, in *ChangeRequest, opts ...grpc.CallOption) (*ChangeResponse, error)
 	AddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*AddAddressResponse, error)
+	ViewAddress(ctx context.Context, in *ViewAddressRequest, opts ...grpc.CallOption) (*ViewAddressResponse, error)
+	EditAddress(ctx context.Context, in *EditAddressRequest, opts ...grpc.CallOption) (*EditAddressResponse, error)
 }
 
 type profileManagementClient struct {
@@ -72,6 +74,24 @@ func (c *profileManagementClient) AddAddress(ctx context.Context, in *AddAddress
 	return out, nil
 }
 
+func (c *profileManagementClient) ViewAddress(ctx context.Context, in *ViewAddressRequest, opts ...grpc.CallOption) (*ViewAddressResponse, error) {
+	out := new(ViewAddressResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/ViewAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *profileManagementClient) EditAddress(ctx context.Context, in *EditAddressRequest, opts ...grpc.CallOption) (*EditAddressResponse, error) {
+	out := new(EditAddressResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/EditAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProfileManagementServer is the server API for ProfileManagement service.
 // All implementations must embed UnimplementedProfileManagementServer
 // for forward compatibility
@@ -80,6 +100,8 @@ type ProfileManagementServer interface {
 	EditProfile(context.Context, *EditProfileRequest) (*EditProfileResponse, error)
 	ChangePassword(context.Context, *ChangeRequest) (*ChangeResponse, error)
 	AddAddress(context.Context, *AddAddressRequest) (*AddAddressResponse, error)
+	ViewAddress(context.Context, *ViewAddressRequest) (*ViewAddressResponse, error)
+	EditAddress(context.Context, *EditAddressRequest) (*EditAddressResponse, error)
 	mustEmbedUnimplementedProfileManagementServer()
 }
 
@@ -98,6 +120,12 @@ func (UnimplementedProfileManagementServer) ChangePassword(context.Context, *Cha
 }
 func (UnimplementedProfileManagementServer) AddAddress(context.Context, *AddAddressRequest) (*AddAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddAddress not implemented")
+}
+func (UnimplementedProfileManagementServer) ViewAddress(context.Context, *ViewAddressRequest) (*ViewAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewAddress not implemented")
+}
+func (UnimplementedProfileManagementServer) EditAddress(context.Context, *EditAddressRequest) (*EditAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditAddress not implemented")
 }
 func (UnimplementedProfileManagementServer) mustEmbedUnimplementedProfileManagementServer() {}
 
@@ -184,6 +212,42 @@ func _ProfileManagement_AddAddress_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProfileManagement_ViewAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ViewAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).ViewAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/ViewAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).ViewAddress(ctx, req.(*ViewAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProfileManagement_EditAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).EditAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/EditAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).EditAddress(ctx, req.(*EditAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProfileManagement_ServiceDesc is the grpc.ServiceDesc for ProfileManagement service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +270,14 @@ var ProfileManagement_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddAddress",
 			Handler:    _ProfileManagement_AddAddress_Handler,
+		},
+		{
+			MethodName: "ViewAddress",
+			Handler:    _ProfileManagement_ViewAddress_Handler,
+		},
+		{
+			MethodName: "EditAddress",
+			Handler:    _ProfileManagement_EditAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

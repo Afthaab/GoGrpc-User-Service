@@ -89,12 +89,12 @@ func (h *UserHandler) ChangePassword(ctx context.Context, req *pb.ChangeRequest)
 
 func (h *UserHandler) AddAddress(ctx context.Context, req *pb.AddAddressRequest) (*pb.AddAddressResponse, error) {
 	addressData := domain.Address{
-		Uid:      uint(req.Id),
-		Houseno:  req.Houseno,
-		Area:     req.Area,
-		Landmark: req.Landmark,
-		City:     req.City,
-		Type:     req.Type,
+		Uid:             uint(req.Id),
+		Type:            req.Type,
+		Locationaddress: req.Locationaddress,
+		CompleteAddress: req.Completeaddress,
+		Landmark:        req.Landmark,
+		Floorno:         req.Floorno,
 	}
 	addressData, err := h.useCase.AddAddress(addressData)
 	if err != nil {
@@ -110,4 +110,62 @@ func (h *UserHandler) AddAddress(ctx context.Context, req *pb.AddAddressRequest)
 		}, nil
 	}
 
+}
+
+func (h *UserHandler) ViewAddress(ctx context.Context, req *pb.ViewAddressRequest) (*pb.ViewAddressResponse, error) {
+	addressData := domain.Address{
+		Uid: uint(req.Id),
+	}
+	var address []domain.Address
+	address, err := h.useCase.ViewAddress(addressData)
+	if err != nil {
+		return &pb.ViewAddressResponse{
+			Status: http.StatusBadRequest,
+			Error:  "Error in Viewing the address",
+		}, err
+	}
+
+	var pbAddresses []*pb.Address
+	for _, addr := range address {
+		pbAddr := &pb.Address{
+			Addressid:       int64(addr.Addressid),
+			Type:            addr.Type,
+			Locationaddress: addr.Locationaddress,
+			Completeaddress: addr.CompleteAddress,
+			Landmark:        addr.Landmark,
+			Floorno:         addr.Floorno,
+		}
+		pbAddresses = append(pbAddresses, pbAddr)
+	}
+	return &pb.ViewAddressResponse{
+		Status:    http.StatusOK,
+		Addresses: pbAddresses,
+	}, nil
+}
+
+func (h *UserHandler) EditAddress(ctx context.Context, req *pb.EditAddressRequest) (*pb.EditAddressResponse, error) {
+	addreddData := domain.Address{
+		Addressid:       uint(req.Addressid),
+		Uid:             uint(req.Id),
+		Type:            req.Type,
+		Locationaddress: req.Locationaddress,
+		CompleteAddress: req.Completeaddress,
+		Landmark:        req.Landmark,
+		Floorno:         req.Floorno,
+	}
+
+	addreddData, err := h.useCase.EditAddress(addreddData)
+	if err != nil {
+		return &pb.EditAddressResponse{
+			Status: http.StatusBadRequest,
+			Error:  "Error in Editing the Address",
+			Addid:  int64(addreddData.Addressid),
+		}, err
+	} else {
+		return &pb.EditAddressResponse{
+			Status: http.StatusOK,
+			Error:  "nil",
+			Addid:  int64(addreddData.Addressid),
+		}, nil
+	}
 }

@@ -29,6 +29,16 @@ func (r *UserDataBase) CreateAddress(addressData domain.Address) (domain.Address
 	result := r.DB.Create(&addressData)
 	return addressData, result.Error
 }
+func (r *UserDataBase) ViewAllAddress(addressData domain.Address) ([]domain.Address, error) {
+	var address []domain.Address
+	result := r.DB.Raw("select * from addresses where uid = ?", addressData.Uid).Scan(&address)
+	return address, result.Error
+}
+
+func (r *UserDataBase) EditAddress(addressData domain.Address) (domain.Address, int64) {
+	result := r.DB.Exec("UPDATE addresses SET type = ?, locationaddress = ?, complete_address = ?, landmark = ?, floorno = ? where uid = ? AND addressid = ?", addressData.Type, addressData.Locationaddress, addressData.CompleteAddress, addressData.Landmark, addressData.Floorno, addressData.Uid, addressData.Addressid)
+	return addressData, result.RowsAffected
+}
 
 func NewUserRepo(db *gorm.DB) interfaces.UserRepo {
 	return &UserDataBase{
