@@ -10,7 +10,25 @@ service ProfileManagement{
     rpc ChangePassword(ChangeRequest) returns (ChangeResponse) {}
     rpc AddAddress(AddAddressRequest) returns (AddAddressResponse) {}
     rpc ViewAddress(ViewAddressRequest) returns (ViewAddressResponse) {}
+    rpc ViewAddressById(ViewAddressByIdRequest) returns (ViewAddressByIdResponse) {}
     rpc EditAddress(EditAddressRequest) returns (EditAddressResponse) {}
+}
+
+message ViewAddressByIdRequest{
+    int64 addid = 1;
+    int64 uid = 2;
+
+}
+
+message ViewAddressByIdResponse{
+    int64 addressid = 1;
+    string type = 2;
+    string locationaddress = 3;
+    string completeaddress = 4;
+    string landmark = 5;
+    string floorno = 6;
+    int64 status = 7;
+    string error = 8;
 }
 
 message ViewProfileRequest{

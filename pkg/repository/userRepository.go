@@ -10,9 +10,9 @@ type UserDataBase struct {
 	DB *gorm.DB
 }
 
-func (r *UserDataBase) FindProfile(user domain.User) (domain.User, error) {
-	result := r.DB.Raw("select * from users where id = ?", user.Id).Scan(&user).Error
-	return user, result
+func (r *UserDataBase) FindProfile(user domain.User) (domain.User, int64) {
+	result := r.DB.Raw("select * from users where id = ?", user.Id).Scan(&user)
+	return user, result.RowsAffected
 }
 
 func (r *UserDataBase) EditProfile(user domain.User) int {
@@ -20,23 +20,33 @@ func (r *UserDataBase) EditProfile(user domain.User) int {
 	return int(result.RowsAffected)
 }
 
-func (r *UserDataBase) UpdatePassword(passwordData domain.Password) int {
+func (r *UserDataBase) UpdatePassword(passwordData domain.Password) int64 {
 	result := r.DB.Exec("UPDATE users SET password = ? where id = ?", passwordData.Newpassword, passwordData.Id)
-	return int(result.RowsAffected)
+	return result.RowsAffected
 }
 
 func (r *UserDataBase) CreateAddress(addressData domain.Address) (domain.Address, error) {
 	result := r.DB.Create(&addressData)
 	return addressData, result.Error
 }
-func (r *UserDataBase) ViewAllAddress(addressData domain.Address) ([]domain.Address, error) {
+func (r *UserDataBase) ViewAllAddress(addressData domain.Address) ([]domain.Address, int64) {
 	var address []domain.Address
 	result := r.DB.Raw("select * from addresses where uid = ?", addressData.Uid).Scan(&address)
-	return address, result.Error
+	return address, result.RowsAffected
 }
 
 func (r *UserDataBase) EditAddress(addressData domain.Address) (domain.Address, int64) {
 	result := r.DB.Exec("UPDATE addresses SET type = ?, locationaddress = ?, complete_address = ?, landmark = ?, floorno = ? where uid = ? AND addressid = ?", addressData.Type, addressData.Locationaddress, addressData.CompleteAddress, addressData.Landmark, addressData.Floorno, addressData.Uid, addressData.Addressid)
+	return addressData, result.RowsAffected
+}
+
+func (r *UserDataBase) FindByUserName(user domain.User) (domain.User, int64) {
+	result := r.DB.Raw("select * from users where username LIKE ?", user.Username).Scan(&domain.User{})
+	return user, result.RowsAffected
+}
+
+func (r *UserDataBase) ViewAddressByID(addressData domain.Address) (domain.Address, int64) {
+	result := r.DB.Raw("select * from addresses where uid = ? and addressid = ?", addressData.Uid, addressData.Addressid).Scan(&addressData)
 	return addressData, result.RowsAffected
 }
 

@@ -27,6 +27,7 @@ type ProfileManagementClient interface {
 	ChangePassword(ctx context.Context, in *ChangeRequest, opts ...grpc.CallOption) (*ChangeResponse, error)
 	AddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*AddAddressResponse, error)
 	ViewAddress(ctx context.Context, in *ViewAddressRequest, opts ...grpc.CallOption) (*ViewAddressResponse, error)
+	ViewAddressById(ctx context.Context, in *ViewAddressByIdRequest, opts ...grpc.CallOption) (*ViewAddressByIdResponse, error)
 	EditAddress(ctx context.Context, in *EditAddressRequest, opts ...grpc.CallOption) (*EditAddressResponse, error)
 }
 
@@ -83,6 +84,15 @@ func (c *profileManagementClient) ViewAddress(ctx context.Context, in *ViewAddre
 	return out, nil
 }
 
+func (c *profileManagementClient) ViewAddressById(ctx context.Context, in *ViewAddressByIdRequest, opts ...grpc.CallOption) (*ViewAddressByIdResponse, error) {
+	out := new(ViewAddressByIdResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/ViewAddressById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *profileManagementClient) EditAddress(ctx context.Context, in *EditAddressRequest, opts ...grpc.CallOption) (*EditAddressResponse, error) {
 	out := new(EditAddressResponse)
 	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/EditAddress", in, out, opts...)
@@ -101,6 +111,7 @@ type ProfileManagementServer interface {
 	ChangePassword(context.Context, *ChangeRequest) (*ChangeResponse, error)
 	AddAddress(context.Context, *AddAddressRequest) (*AddAddressResponse, error)
 	ViewAddress(context.Context, *ViewAddressRequest) (*ViewAddressResponse, error)
+	ViewAddressById(context.Context, *ViewAddressByIdRequest) (*ViewAddressByIdResponse, error)
 	EditAddress(context.Context, *EditAddressRequest) (*EditAddressResponse, error)
 	mustEmbedUnimplementedProfileManagementServer()
 }
@@ -123,6 +134,9 @@ func (UnimplementedProfileManagementServer) AddAddress(context.Context, *AddAddr
 }
 func (UnimplementedProfileManagementServer) ViewAddress(context.Context, *ViewAddressRequest) (*ViewAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewAddress not implemented")
+}
+func (UnimplementedProfileManagementServer) ViewAddressById(context.Context, *ViewAddressByIdRequest) (*ViewAddressByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewAddressById not implemented")
 }
 func (UnimplementedProfileManagementServer) EditAddress(context.Context, *EditAddressRequest) (*EditAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditAddress not implemented")
@@ -230,6 +244,24 @@ func _ProfileManagement_ViewAddress_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProfileManagement_ViewAddressById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ViewAddressByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).ViewAddressById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/ViewAddressById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).ViewAddressById(ctx, req.(*ViewAddressByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProfileManagement_EditAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EditAddressRequest)
 	if err := dec(in); err != nil {
@@ -274,6 +306,10 @@ var ProfileManagement_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ViewAddress",
 			Handler:    _ProfileManagement_ViewAddress_Handler,
+		},
+		{
+			MethodName: "ViewAddressById",
+			Handler:    _ProfileManagement_ViewAddressById_Handler,
 		},
 		{
 			MethodName: "EditAddress",
