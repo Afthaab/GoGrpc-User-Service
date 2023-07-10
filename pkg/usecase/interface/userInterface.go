@@ -9,4 +9,5 @@ type UserUseCase interface {
 	AddAddress(addressData domain.Address) (domain.Address, error)
 	ViewAddress(addressData domain.Address) ([]domain.Address, error)
 	EditAddress(addressData domain.Address) (domain.Address, error)
+	ViewAddressByID(addressData domain.Address) (domain.Address, error)
 }

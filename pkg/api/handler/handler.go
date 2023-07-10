@@ -38,7 +38,7 @@ func (h *UserHandler) ViewProfile(ctx context.Context, req *pb.ViewProfileReques
 		Email:    user.Email,
 		Phone:    user.Phone,
 		Profile:  user.Profile,
-		Error:    "No Error",
+		Error:    "nil",
 		Dob:      user.Dateofbirth,
 		Gender:   user.Gender,
 	}, nil
@@ -140,7 +140,34 @@ func (h *UserHandler) ViewAddress(ctx context.Context, req *pb.ViewAddressReques
 	return &pb.ViewAddressResponse{
 		Status:    http.StatusOK,
 		Addresses: pbAddresses,
+		Error:     "nil",
 	}, nil
+}
+
+func (h *UserHandler) ViewAddressById(ctx context.Context, req *pb.ViewAddressByIdRequest) (*pb.ViewAddressByIdResponse, error) {
+	addressData := domain.Address{
+		Addressid: uint(req.Addid),
+		Uid:       uint(req.Uid),
+	}
+	addressData, err := h.useCase.ViewAddressByID(addressData)
+	if err != nil {
+		return &pb.ViewAddressByIdResponse{
+			Status: http.StatusNotFound,
+			Error:  "Error in Viewing the address",
+		}, err
+	} else {
+		return &pb.ViewAddressByIdResponse{
+			Status:          http.StatusOK,
+			Error:           "nil",
+			Addressid:       int64(addressData.Addressid),
+			Type:            addressData.Type,
+			Locationaddress: addressData.Locationaddress,
+			Completeaddress: addressData.CompleteAddress,
+			Landmark:        addressData.Landmark,
+			Floorno:         addressData.Floorno,
+		}, err
+	}
+
 }
 
 func (h *UserHandler) EditAddress(ctx context.Context, req *pb.EditAddressRequest) (*pb.EditAddressResponse, error) {
