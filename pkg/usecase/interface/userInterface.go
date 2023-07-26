@@ -10,4 +10,6 @@ type UserUseCase interface {
 	ViewAddress(addressData domain.Address) ([]domain.Address, error)
 	EditAddress(addressData domain.Address) (domain.Address, error)
 	ViewAddressByID(addressData domain.Address) (domain.Address, error)
+	ViewAllUser(userData domain.User) ([]domain.User, error)
+	BlockOrUnblockUser(userData domain.User) error
 }

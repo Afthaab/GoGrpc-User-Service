@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/profile/service/pkg/domain"
 	interfaces "github.com/profile/service/pkg/repository/interface"
 	"gorm.io/gorm"
@@ -8,6 +10,18 @@ import (
 
 type UserDataBase struct {
 	DB *gorm.DB
+}
+
+func (r *UserDataBase) BlockOrUnblockUser(userData domain.User) int64 {
+	fmt.Println(userData)
+	result := r.DB.Exec("update users set isblocked = ? where id = ?", userData.Isblocked, userData.Id).Scan(&userData)
+	return result.RowsAffected
+}
+
+func (r *UserDataBase) ViewAllUsers(userData domain.User) ([]domain.User, int64) {
+	userDatas := []domain.User{}
+	result := r.DB.Raw("select * from users").Scan(&userDatas)
+	return userDatas, result.RowsAffected
 }
 
 func (r *UserDataBase) FindProfile(user domain.User) (domain.User, int64) {

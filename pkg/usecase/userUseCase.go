@@ -13,6 +13,22 @@ type UserRepo struct {
 	Repo interfaces.UserRepo
 }
 
+func (u *UserRepo) BlockOrUnblockUser(userData domain.User) error {
+	err := u.Repo.BlockOrUnblockUser(userData)
+	if err == 0 {
+		return errors.New("could not block/unblock the user")
+	}
+	return nil
+}
+
+func (u *UserRepo) ViewAllUser(userData domain.User) ([]domain.User, error) {
+	userDatas, result := u.Repo.ViewAllUsers(userData)
+	if result == 0 {
+		return userDatas, errors.New("Could do not fetch the data")
+	}
+	return userDatas, nil
+}
+
 func (u *UserRepo) ViewProfile(user domain.User) (domain.User, error) {
 	user, result := u.Repo.FindProfile(user)
 	if result == 0 {

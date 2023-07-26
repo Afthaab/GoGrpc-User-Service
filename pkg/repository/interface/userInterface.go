@@ -13,4 +13,6 @@ type UserRepo interface {
 	ViewAddressByID(addressData domain.Address) (domain.Address, int64)
 	EditAddress(addressData domain.Address) (domain.Address, int64)
 	FindByUserName(user domain.User) (domain.User, int64)
+	ViewAllUsers(userData domain.User) ([]domain.User, int64)
+	BlockOrUnblockUser(userData domain.User) int64
 }
