@@ -9,6 +9,7 @@ type User struct {
 	Profile     string `json:"profile"`
 	Dateofbirth string `json:"dateofbirth" gorm:"default:null"`
 	Gender      string `json:"gender" gorm:"default:null" `
+	Isblocked   bool   `json:"isblocked" gorm:"default:false"`
 }
 
 type Password struct {

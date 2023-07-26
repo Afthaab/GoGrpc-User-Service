@@ -12,6 +12,25 @@ service ProfileManagement{
     rpc ViewAddress(ViewAddressRequest) returns (ViewAddressResponse) {}
     rpc ViewAddressById(ViewAddressByIdRequest) returns (ViewAddressByIdResponse) {}
     rpc EditAddress(EditAddressRequest) returns (EditAddressResponse) {}
+    rpc ViewAllUsers(ViewAllUsersRequest) returns (ViewAllUsersResponse) {}
+    rpc BlockOrUnblockUser(BlockRequest) returns (BlockResponse) {}
+}
+
+message BlockRequest{
+    int64 userid = 1;
+    bool blockstatus = 2;
+}
+message BlockResponse{
+    int64 status = 1;
+    string error = 2;
+}
+
+message ViewAllUsersRequest{}
+
+message ViewAllUsersResponse{
+    int64 status = 1;
+    string error = 2;
+    repeated ViewProfileResponse profiles = 3;
 }
 
 message ViewAddressByIdRequest{
@@ -29,6 +48,7 @@ message ViewAddressByIdResponse{
     string floorno = 6;
     int64 status = 7;
     string error = 8;
+    bool isblocked = 9;
 }
 
 message ViewProfileRequest{
@@ -44,7 +64,9 @@ message ViewProfileResponse{
     string error = 6;
     string gender = 7;
     string dob = 8;
+    bool isblocked = 9;
 }
+
 message EditProfileRequest{
     int64 id = 1 ;
     string username = 2;
@@ -117,7 +139,6 @@ message EditAddressResponse{
     string error = 2;
     int64 addid = 3;
 }
-  
 
 
 // export PATH="$PATH:$(go env GOPATH)/bin"

@@ -196,3 +196,56 @@ func (h *UserHandler) EditAddress(ctx context.Context, req *pb.EditAddressReques
 		}, nil
 	}
 }
+
+// ------------------------------------ Admin User Management ------------------------------------------
+
+func (h *UserHandler) ViewAllUsers(ctx context.Context, req *pb.ViewAllUsersRequest) (*pb.ViewAllUsersResponse, error) {
+	userData := domain.User{}
+	userDatas, err := h.useCase.ViewAllUser(userData)
+	if err != nil {
+		return &pb.ViewAllUsersResponse{
+			Status: http.StatusBadRequest,
+			Error:  "Could not view all users",
+		}, err
+	} else {
+		var users []*pb.ViewProfileResponse
+
+		for _, data := range userDatas {
+			user := &pb.ViewProfileResponse{
+				Username:  data.Username,
+				Email:     data.Email,
+				Phone:     data.Phone,
+				Profile:   data.Profile,
+				Gender:    data.Gender,
+				Dob:       data.Dateofbirth,
+				Isblocked: data.Isblocked,
+			}
+			users = append(users, user)
+		}
+
+		return &pb.ViewAllUsersResponse{
+			Status:   http.StatusOK,
+			Error:    "nil",
+			Profiles: users,
+		}, nil
+	}
+}
+
+func (h *UserHandler) BlockOrUnblockUser(ctx context.Context, req *pb.BlockRequest) (*pb.BlockResponse, error) {
+	userData := domain.User{
+		Id:        uint(req.Userid),
+		Isblocked: req.Blockstatus,
+	}
+	err := h.useCase.BlockOrUnblockUser(userData)
+	if err != nil {
+		return &pb.BlockResponse{
+			Status: http.StatusBadRequest,
+			Error:  "Could not block or unblock the user",
+		}, err
+	} else {
+		return &pb.BlockResponse{
+			Status: http.StatusOK,
+			Error:  "nil",
+		}, nil
+	}
+}

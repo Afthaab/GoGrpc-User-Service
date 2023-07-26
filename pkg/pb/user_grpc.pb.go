@@ -29,6 +29,8 @@ type ProfileManagementClient interface {
 	ViewAddress(ctx context.Context, in *ViewAddressRequest, opts ...grpc.CallOption) (*ViewAddressResponse, error)
 	ViewAddressById(ctx context.Context, in *ViewAddressByIdRequest, opts ...grpc.CallOption) (*ViewAddressByIdResponse, error)
 	EditAddress(ctx context.Context, in *EditAddressRequest, opts ...grpc.CallOption) (*EditAddressResponse, error)
+	ViewAllUsers(ctx context.Context, in *ViewAllUsersRequest, opts ...grpc.CallOption) (*ViewAllUsersResponse, error)
+	BlockOrUnblockUser(ctx context.Context, in *BlockRequest, opts ...grpc.CallOption) (*BlockResponse, error)
 }
 
 type profileManagementClient struct {
@@ -102,6 +104,24 @@ func (c *profileManagementClient) EditAddress(ctx context.Context, in *EditAddre
 	return out, nil
 }
 
+func (c *profileManagementClient) ViewAllUsers(ctx context.Context, in *ViewAllUsersRequest, opts ...grpc.CallOption) (*ViewAllUsersResponse, error) {
+	out := new(ViewAllUsersResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/ViewAllUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *profileManagementClient) BlockOrUnblockUser(ctx context.Context, in *BlockRequest, opts ...grpc.CallOption) (*BlockResponse, error) {
+	out := new(BlockResponse)
+	err := c.cc.Invoke(ctx, "/profile.ProfileManagement/BlockOrUnblockUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProfileManagementServer is the server API for ProfileManagement service.
 // All implementations must embed UnimplementedProfileManagementServer
 // for forward compatibility
@@ -113,6 +133,8 @@ type ProfileManagementServer interface {
 	ViewAddress(context.Context, *ViewAddressRequest) (*ViewAddressResponse, error)
 	ViewAddressById(context.Context, *ViewAddressByIdRequest) (*ViewAddressByIdResponse, error)
 	EditAddress(context.Context, *EditAddressRequest) (*EditAddressResponse, error)
+	ViewAllUsers(context.Context, *ViewAllUsersRequest) (*ViewAllUsersResponse, error)
+	BlockOrUnblockUser(context.Context, *BlockRequest) (*BlockResponse, error)
 	mustEmbedUnimplementedProfileManagementServer()
 }
 
@@ -140,6 +162,12 @@ func (UnimplementedProfileManagementServer) ViewAddressById(context.Context, *Vi
 }
 func (UnimplementedProfileManagementServer) EditAddress(context.Context, *EditAddressRequest) (*EditAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EditAddress not implemented")
+}
+func (UnimplementedProfileManagementServer) ViewAllUsers(context.Context, *ViewAllUsersRequest) (*ViewAllUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewAllUsers not implemented")
+}
+func (UnimplementedProfileManagementServer) BlockOrUnblockUser(context.Context, *BlockRequest) (*BlockResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockOrUnblockUser not implemented")
 }
 func (UnimplementedProfileManagementServer) mustEmbedUnimplementedProfileManagementServer() {}
 
@@ -280,6 +308,42 @@ func _ProfileManagement_EditAddress_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProfileManagement_ViewAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ViewAllUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).ViewAllUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/ViewAllUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).ViewAllUsers(ctx, req.(*ViewAllUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProfileManagement_BlockOrUnblockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileManagementServer).BlockOrUnblockUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/profile.ProfileManagement/BlockOrUnblockUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileManagementServer).BlockOrUnblockUser(ctx, req.(*BlockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProfileManagement_ServiceDesc is the grpc.ServiceDesc for ProfileManagement service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +378,14 @@ var ProfileManagement_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EditAddress",
 			Handler:    _ProfileManagement_EditAddress_Handler,
+		},
+		{
+			MethodName: "ViewAllUsers",
+			Handler:    _ProfileManagement_ViewAllUsers_Handler,
+		},
+		{
+			MethodName: "BlockOrUnblockUser",
+			Handler:    _ProfileManagement_BlockOrUnblockUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
