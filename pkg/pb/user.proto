@@ -64,7 +64,8 @@ message ViewProfileResponse{
     string error = 6;
     string gender = 7;
     string dob = 8;
-    bool isblocked = 9;
+    int64 id = 9;
+    bool isblocked = 10;
 }
 
 message EditProfileRequest{
