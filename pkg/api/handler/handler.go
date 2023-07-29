@@ -33,14 +33,16 @@ func (h *UserHandler) ViewProfile(ctx context.Context, req *pb.ViewProfileReques
 		}, err
 	}
 	return &pb.ViewProfileResponse{
-		Status:   http.StatusOK,
-		Username: user.Username,
-		Email:    user.Email,
-		Phone:    user.Phone,
-		Profile:  user.Profile,
-		Error:    "nil",
-		Dob:      user.Dateofbirth,
-		Gender:   user.Gender,
+		Status:    http.StatusOK,
+		Username:  user.Username,
+		Email:     user.Email,
+		Phone:     user.Phone,
+		Profile:   user.Profile,
+		Error:     "nil",
+		Dob:       user.Dateofbirth,
+		Gender:    user.Gender,
+		Isblocked: user.Isblocked,
+		Id:        int64(user.Id),
 	}, nil
 }
 
@@ -219,6 +221,7 @@ func (h *UserHandler) ViewAllUsers(ctx context.Context, req *pb.ViewAllUsersRequ
 				Gender:    data.Gender,
 				Dob:       data.Dateofbirth,
 				Isblocked: data.Isblocked,
+				Id:        int64(data.Id),
 			}
 			users = append(users, user)
 		}
