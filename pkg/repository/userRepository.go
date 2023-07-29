@@ -20,7 +20,7 @@ func (r *UserDataBase) BlockOrUnblockUser(userData domain.User) int64 {
 
 func (r *UserDataBase) ViewAllUsers(userData domain.User) ([]domain.User, int64) {
 	userDatas := []domain.User{}
-	result := r.DB.Raw("select * from users").Scan(&userDatas)
+	result := r.DB.Raw("SELECT * FROM users ORDER BY id ASC;").Scan(&userDatas)
 	return userDatas, result.RowsAffected
 }
 
